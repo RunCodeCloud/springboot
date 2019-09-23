@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery-1.11.3.min.js"></script>
+		<script>
+			
+			/** 
+			 * 获取指定的URL参数值 
+			 * URL:http://www.quwan.com/index?name=tyler 
+			 * 参数：paramName URL参数 
+			 * 调用方法:getParam("name") 
+			 * 返回值:tyler 
+			 */ 
+			function getParam(paramName) { 
+		    	paramValue = "", isFound = !1; 
+		    	if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) { 
+		        	arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0; 
+		        	while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++ 
+		    	} 
+		    	return paramValue == "" && (paramValue = null), paramValue 
+			} 
+			
+			var g_itemVo = {};
+			
+			$(function(){	
+				
+				$("#create").on("click",function(){
+					$.ajax({
+						type:"POST",
+						contentType:"application/x-www-form-urlencoded",
+						url:"http://localhost:8080/order/create",
+						data:{
+							"itemId":g_itemVo.id,
+							"amount":1,
+							"promoId":g_itemVo.promoId,
+						},
+						xhrFields:{withCredentials:true},
+						success: function(data){
+							if(data.status=="success"){
+								alert("下单成功");
+								window.location.reload();
+							}else{
+								alert("下单失败,原因为"+data.date.errMsg);
+								if(data.date.errCode==20003){
+									window.location.href="login.html";
+								}
+							}
+						},
+						error: function(data){
+							alert("下单失败,原因为"+data.responseText);
+						}
+					});
+				});
+			});
+			
+			
+			$(function(){				
+				$.ajax({
+					type:"GET",
+					url:"http://localhost:8080/item/getItem",
+					data:{
+						"id":getParam("id"),
+					},
+					xhrFields:{withCredentials:true},
+					success: function(data){
+						if(data.status=="success"){
+							g_itemVo = data.date;
+							reloadDom();
+							setInterval(reloadDom,1000);
+						}else{
+							alert("获取信息失败,原因为"+data.date.errMsg);
+						}
+					},
+					error: function(data){
+						alert("获取信息失败,原因为"+data.responseText);
+					}
+				});
+			});
+			function reloadDom(){
+				$("#title").text(g_itemVo.title);
+				$("#description").text(g_itemVo.description);
+				$("#price").text(g_itemVo.price);
+				$("#img_url").attr("src",g_itemVo.img_url);
+				$("#stock").text(g_itemVo.stock);
+				$("#sales").text(g_itemVo.sales);
+				
+				if(g_itemVo.promoStatus==1){
+					//秒杀活动还未开始
+					var startTime = g_itemVo.startTime.replace(new RegExp("-","gm"),"/");
+					startTime = (new Date(startTime)).getTime();
+					
+					var nowDate = Date.parse(new Date());
+					var delta = (startTime-nowDate)/1000;
+					if(delta<=0){
+						//秒杀开始
+						g_itemVo.promoStatus = 2;
+						reloadDom();
+					}
+					
+					$("#promoStartTime").text("秒杀活动将于"+g_itemVo.startTime+"开始售卖  倒计时:"+delta+"秒");
+					$("#promoPrice").text("秒杀价格为"+g_itemVo.promoPrice);
+					$("#create").attr("disabled",true);
+				}else if(g_itemVo.promoStatus==2){
+					//秒杀活动正在进行
+					$("#promoStartTime").text("秒杀活动正在进行中");
+					$("#promoPrice").text("秒杀价格为"+g_itemVo.promoPrice);
+					$("#create").attr("disabled",false);
+					$("#nomalPriceContainer").hide();
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<table>
+			<tr id="promoStartTimeContainer">
+				<!--<td style="color: red;">秒杀开始时间</td>-->
+				<td style="color: red;"><labe id="promoStartTime" name="promoStartTime"/></td>
+			</tr>
+			<tr>
+				<td>商品名</td>
+				<td><label id="title" name="title"/></td>
+			</tr>
+			<tr>
+				<td>描述</td>
+				<td><label id="description" name="description"/></td>
+			</tr>
+			<tr id="nomalPriceContainer">
+				<td>价格</td>
+				<td><labe id="price" name="price"/></td>
+			</tr>
+			<tr id="promoPriceContainer">
+				<td style="color: red;"><!--秒杀价格--></td>
+				<td style="color: red;"><labe id="promoPrice" name="promoPrice"/></td>
+			</tr>
+			<tr>
+				<td>图片</td>
+				<td><img id="img_url" style="width: 200px;height: auto; " src="" name="img_url" /></td>
+			</tr>
+			<tr>
+				<td>库存</td>
+				<td><label id="stock" name="stock"/></td>
+			</tr>
+			<tr>
+				<td>销量</td>
+				<td><label id="sales" name="sales"/></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input id="create" type="button"  value="下单"/></td>
+			</tr>
+		</table>
+	</body>
+</html>
+

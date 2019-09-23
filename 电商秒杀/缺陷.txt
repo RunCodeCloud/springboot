@@ -1,0 +1,21 @@
+https://www.imooc.com/learn/1079
+
+
+ThreadLocal
+proxy
+
+
+快捷键 1.sout 2.psvm 3.快捷键为：alt+insert 4.Ctrl+alt+t  5.alt+enter 注释
+ @Transactional
+
+缺陷：
+1.未使用自动生成工具
+2.sequence未加锁
+3.在数据库插入中，如果没有给值，应该为数据库的默认字段
+
+
+mysql的datetime对应java的类型
+用Timestamp
+
+
+

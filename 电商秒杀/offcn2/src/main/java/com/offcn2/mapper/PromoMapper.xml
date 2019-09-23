@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn2.mapper.PromoMapper">
+    <select id="selectByItemId" resultType="Promo" parameterType="int">
+        SELECT * from promo where itemId = #{itemId}
+    </select>
+</mapper>

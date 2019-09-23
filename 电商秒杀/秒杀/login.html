@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>登录界面</title>
+	<script src="js/jquery-1.11.3.min.js"></script>
+		<script>
+			$(function(){
+					$("#register").on("click",function(){
+						window.location.href="getotp.html";
+					});
+					$("#login").on("click",function(){	
+						var telphone = $("#telphone").val();
+						var password = $("#password").val();
+						
+						if(telphone==null||telphone==""){
+							alert("手机号不能为空");
+							return false;
+						}
+						if(password==null||password==""){
+							alert("密码不能为空");
+							return false;
+						}
+						
+						$.ajax({
+							type:"POST",
+							contentType:"application/x-www-form-urlencoded",
+							url:"http://localhost:8080/user/login",
+							data:{
+								"telphone":$("#telphone").val(),
+								"password":password,
+							},
+							/*配合后端设置,使session共享*/
+							xhrFields:{withCredentials:true},
+							success: function(data){
+								if(data.status=="success"){
+									alert("登录成功");
+									window.location.href="list.html";
+								}else{
+									alert("登录失败,原因为"+data.date.errMsg);
+								}
+							},
+							error: function(data){
+								alert("登录失败,原因为"+data.responseText);
+							}
+						});
+						
+						return false;
+					});
+			});
+		</script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					手机号
+				</td>
+				<td>
+					<input type="text" id="telphone" name="telphone"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					密码
+				</td>
+				<td>
+					<input type="password" id="password" name="password"/>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="submit" id="login" value="登录"></td>
+				<td><input type="submit" id="register" value="注册"></td>
+			</tr>
+		</table>
+	</body>
+</html>
+

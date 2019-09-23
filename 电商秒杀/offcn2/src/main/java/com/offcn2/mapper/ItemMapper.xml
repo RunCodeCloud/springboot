@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn2.mapper.ItemMapper">
+    <select id="selectItemById" resultType="Item" parameterType="int">
+        SELECT * from item where id= #{id}
+    </select>
+    <select id="selectItemByTitle" resultType="Item" parameterType="String">
+        SELECT * from item where title= #{title}
+    </select>
+    <insert id="insertItem" parameterType="Item">
+        insert into item(title,price,description,sales,img_url) values(#{title},#{price},#{description},#{sales},#{img_url})
+    </insert>
+    <select id="ListItem" resultType="Item">
+        SELECT * from item
+    </select>
+    <update id="increaseSales">
+      update item set sales = sales + #{amount} where id=#{itemId}
+  </update>
+</mapper>

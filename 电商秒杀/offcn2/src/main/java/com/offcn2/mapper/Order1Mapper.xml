@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn2.mapper.Order1Mapper">
+    <insert id="insertOrder" parameterType="Order1">
+        insert into order1(id,itemId,userId,itemPrice,amount,orderPrice,promoId) values(#{id},#{itemId},#{userId},#{itemPrice},#{amount},#{orderPrice},#{promoId})
+    </insert>
+</mapper>

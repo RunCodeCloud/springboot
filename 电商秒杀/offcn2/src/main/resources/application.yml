@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/miaosha?characterEncoding=utf8&useUnicode=true
+    username: root
+    password: 1234
+
+#  mvc:
+#    static-path-pattern: /static/**  #配置静态路径
+
+mybatis:
+  type-aliases-package: com.offcn2.bean
+  mapper-locations: classpath:com.offcn2/mapper/*.xml

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+			var g_itemlist = [];
+			
+			$(function(){				
+				$.ajax({
+					type:"GET",
+					url:"http://localhost:8080/item/list",
+					xhrFields:{withCredentials:true},
+					success: function(data){
+						if(data.status=="success"){
+							g_itemlist = data.date;
+							reloadDom();
+						}else{
+							alert("获取信息失败,原因为"+data.date.errMsg);
+						}
+					},
+					error: function(data){
+						alert("获取信息失败,原因为"+data.responseText);
+					}
+				});
+					return false;
+			});
+			function reloadDom(){
+				for(var i=0;i<g_itemlist.length;i++){
+					var itemVo = g_itemlist[i];
+					var dom = "<tr id='"+itemVo.id+"' onclick='xuanqu(this)' ><td>"+itemVo.title+"</td><td><img style='width:100px;height:auto;' src='"+itemVo.img_url+"'></td><td>"+itemVo.description+"</td><td>"+itemVo.price+"</td><td>"+itemVo.price+"</td><td>"+itemVo.stock+"</td><td>"+itemVo.sales+"</td></tr>"
+				
+					$("#container").append($(dom));
+				}
+			}
+			function xuanqu(obj){
+				window.location.href="getItem.html?id="+$(obj).attr("id");
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<table>
+				<thead>
+					<tr>
+						<th>商品名称</th>
+						<th>商品图片</th>
+						<th>商品描述</th>
+						<th>商品价格</th>
+						<th>商品库存</th>
+						<th>商品销量</th>
+					</tr>
+				</thead>
+				<tbody id="container">
+					
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>
